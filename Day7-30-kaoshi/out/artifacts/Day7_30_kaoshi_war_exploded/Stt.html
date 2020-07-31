@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="layer/theme/default/layer.css">
+    <script src="bootstrap/js/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="layer/layer.js"></script>
+</head>
+<body onload="sel(1)">
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1>会议室列表</h1>
+        </div>
+
+        <div class="panel-body">
+
+            <table class="table">
+
+                <a class="btn btn-success" id="open">添加</a>
+
+                <tr>
+                    <!--<%&#45;&#45;序号、会议室编号、会议室名称、会议室地 址、会议室容量&#45;&#45;%>-->
+                    <td>序号</td>
+                    <td>会议室编号</td>
+                    <td>会议室名称</td>
+                    <td>会议室地址</td>
+                    <td>会议室容量</td>
+                    <td>操作</td>
+                </tr>
+                <tbody id="tbody">
+
+                </tbody>
+                <!--<%&#45;&#45;旧代码，利用jsp实现&#45;&#45;%>-->
+                <!--<%&#45;&#45;会议室信息&#45;&#45;%>-->
+                <!--<%&#45;&#45;<c:forEach items="${list}" var="cr">&#45;&#45;%>-->
+                <!--<%&#45;&#45;<tr id='${cr.crid}'>&#45;&#45;%>-->
+                    <!--<%&#45;&#45;<td>${cr.crid}</td>&#45;&#45;%>-->
+                    <!--<%&#45;&#45;<td>${cr.crno}</td>&#45;&#45;%>-->
+                    <!--<%&#45;&#45;<td>${cr.crname}</td>&#45;&#45;%>-->
+                    <!--<%&#45;&#45;<td>${cr.craddr}</td>&#45;&#45;%>-->
+                    <!--<%&#45;&#45;<td>${cr.capacity}</td>&#45;&#45;%>-->
+                    <!--<%&#45;&#45;<td>&#45;&#45;%>-->
+                        <!--<%&#45;&#45;<a class="btn btn-success" href="#" data-toggle="modal" data-target="#myModal"&#45;&#45;%>-->
+                            <!--<%&#45;&#45;onclick="update('${cr.crid}','${cr.crno}','${cr.crname}','${cr.craddr}','${cr.capacity}')">&#45;&#45;%>-->
+                            <!--<%&#45;&#45;修改&#45;&#45;%>-->
+                            <!--<%&#45;&#45;</a>&#45;&#45;%>-->
+                        <!--<%&#45;&#45;<a class="btn btn-danger" onclick="del('${cr.crid}')" >删除</a>&#45;&#45;%>-->
+                        <!--<%&#45;&#45;</td>&#45;&#45;%>-->
+                    <!--<%&#45;&#45;</tr>&#45;&#45;%>-->
+                <!--<%&#45;&#45;</c:forEach>&#45;&#45;%>-->
+            </table>
+
+            <!--<%&#45;&#45;分页信息&#45;&#45;%>-->
+            <ul class="pagination" id="fy">
+                <!--<%&#45;&#45;旧代码，利用jsp实现&#45;&#45;%>-->
+                <!--<%&#45;&#45;<c:if test="${page!=1}">&#45;&#45;%>-->
+                <!--<%&#45;&#45;<li><a href="/show?page=${page-1}">&laquo;</a></li>&#45;&#45;%>-->
+                <!--<%&#45;&#45;</c:if>&#45;&#45;%>-->
+                <!--<%&#45;&#45;<c:forEach begin="1" end="${count}" var="s">&#45;&#45;%>-->
+                <!--<%&#45;&#45;<c:if test="${s==page}" var="flag">&#45;&#45;%>-->
+                    <!--<%&#45;&#45;<li><a href="/show?page=${s}" style="background-color:#2aabd2;color:white;">${s}</a></li>&#45;&#45;%>-->
+                    <!--<%&#45;&#45;</c:if>&#45;&#45;%>-->
+                <!--<%&#45;&#45;<c:if test="${not flag}">&#45;&#45;%>-->
+                    <!--<%&#45;&#45;<li><a href="/show?page=${s}">${s}</a></li>&#45;&#45;%>-->
+                    <!--<%&#45;&#45;</c:if>&#45;&#45;%>-->
+                <!--<%&#45;&#45;</c:forEach>&#45;&#45;%>-->
+
+                <!--<%&#45;&#45;<c:if test="${page!=count}">&#45;&#45;%>-->
+                <!--<%&#45;&#45;<li><a href="/show?page=${page+1}">&raquo;</a></li>&#45;&#45;%>-->
+                <!--<%&#45;&#45;</c:if>&#45;&#45;%>-->
+            </ul>
+
+        </div>
+
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">添加或修改用户信息</h4>
+                    </div>
+
+                    <!--//添加表单-->
+                    <div class="modal-body">
+                        <form  id="hform" class="form-horizontal" role="form" >
+                            <div class="form-group">
+                                <label  class="col-sm-2 control-label">会议室编号：</label>
+                                <div class="col-sm-5">
+                                    <input hidden name="uid" id="crid">
+                                    <input type="number" class="form-control" id="crno" name="uno"  >
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label  class="col-sm-2 control-label">会议室名：</label>
+                                <div class="col-sm-5">
+                                    <input  class="form-control" id="crname" name="uname"  >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">会议室地址：</label>
+                                <div class="col-sm-5">
+                                    <input  class="form-control" id="craddr"  name="uaddr"  >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">会议室容量：</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" id="capacity"  name="upa"  >
+                                </div>
+                            </div>
+
+
+                            <!--<%&#45;&#45;//提交表单&#45;&#45;%>-->
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" onclick="tj()" class="btn btn-primary">提交</button>
+
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <div class="panel-footer text-right">
+            深圳知领，版权所有。
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    function sel(page){
+        // 新代码，利用ajax实现分页和查询会议室信息
+        $.get("/show?page="+page,function (data) {
+            var p="";       //利用p实现查询会议室信息
+            var pp="";    //利用pp实现分页的html代码
+            if(Number(data.page)!=1){   //当单前页码不为1时显示上一页标签
+                pp+="<li><a onclick='sel("+Number(data.page-1)+")'>&laquo;</a></li>";
+            }
+            for (var i = 1; i <= Number(data.count) ; i++) {
+                if(i==Number(data.page)){
+                    pp+="<li><a onclick='sel("+i+")' id='dqy' style=\"background-color:#2aabd2;color:white;\">"+i+"</a></li>";
+                }else{
+                    pp+="<li><a onclick='sel("+i+")'>"+i+"</a></li>";
+                }
+            }
+            if(Number(data.page)!=Number(data.count)){
+                pp+="<li><a onclick='sel("+Number(data.page+1)+")'>&raquo;</a></li>";
+            }
+            $(data.list).each(function (i,v) {
+                p+="<tr id='"+v.crid+"'>";
+                p+="<td>"+v.crid+"</td>";
+                p+="<td>"+v.crno+"</td>";
+                p+="<td>"+v.crname+"</td>";
+                p+="<td>"+v.craddr+"</td>";
+                p+="<td>"+v.capacity+"</td>";
+                p+="<td>";
+                p+="<a class=\"btn btn-success\" href=\"#\" data-toggle=\"modal\" data-target=\"#myModal\" \t";
+                p+="onclick=\"update('"+v.crid+"','"+v.crno+"','"+v.crname+"','"+v.craddr+"','"+v.capacity+"')\">";
+                p+="修改</a>";
+                p+="<a class=\"btn btn-danger\" onclick=\"del('"+v.crid+"')\" >删除</a>";
+                p+="</td>";
+                p+="</tr>";
+            });$("#tbody").html(p);
+            $("#fy").html(pp);
+        },"json")
+    }
+
+    function tj() {
+        $.post("/add",
+            $("#hform").serialize(),
+            function (data) {
+                var s=$("#dqy").val();
+                $("#myModal").modal("hide");
+                sel(s);
+                layer.msg(data, {icon: 6});
+            },"text");
+    }
+
+    //手动打开模态框添加界面
+    $("#open").click(function () {
+        $("#myModal").modal("show");
+        $("#crid").val("");
+        $("#crno").val("");
+        $("#crname").val("");
+        $("#craddr").val("");
+        $("#capacity").val("");
+    })
+
+    function update(crid,crno,crname,craddr,capacity) {
+        $("#crid").val(crid);
+        $("#crno").val(crno);
+        $("#crname").val(crname);
+        $("#craddr").val(craddr);
+        $("#capacity").val(capacity);
+    }
+    function del(crid) {
+
+        layer.confirm('确认要删除吗？',
+            {icon: 3, title:'系统提示：'},
+            function(index){
+            //do something
+                $.get("/add?crid="+crid,function (data) {
+                    if(data!=0){
+                        $("#"+crid).remove();
+                        layer.msg('删除成功', {icon: 1});
+                    }
+                },"text");
+             layer.close(index); });
+
+    }
+
+
+</script>
+</html>
