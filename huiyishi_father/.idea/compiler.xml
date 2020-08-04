@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="HuiYiShi_Dao" />
+        <module name="HuiYiShi_Model" />
+        <module name="HuiYiShi_Servece" />
+        <module name="HuiYiShi_Web" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>
