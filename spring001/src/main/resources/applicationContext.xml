@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--配置文件-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--c3p0使用的-->
+    <!--<bean id="runner" class="org.apache.commons.dbutils.QueryRunner">-->
+        <!--<constructor-arg name="ds" ref="datasource"/>-->
+    <!--</bean>-->
+    <!--<bean id="datasource" class="com.mchange.v2.c3p0.ComboPooledDataSource">-->
+        <!--<property name="driverClass" value="oracle.jdbc.driver.OracleDriver"/>-->
+        <!--<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:orcl"/>-->
+        <!--<property name="user" value="yin"/>-->
+        <!--<property name="password" value="123456"/>-->
+    <!--</bean>-->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${user}"/>
+        <property name="password" value="${pwd}"/>
+    </bean>
+
+    <context:component-scan base-package="com.sz.zhiling"/>
+
+    <context:property-placeholder location="classpath*:JDBC.properties"/>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--使用注解注入-->
+    <bean id="showDao" class="com.sz.zhiling.dao.ShowDao"/>
+    <!--使用set注入时使用这个-->
+        <!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
+    <!--</bean>-->
+    <bean id="upDao" class="com.sz.zhiling.dao.UPDao"/>
+        <!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
+    <!--</bean>-->
+    <bean id="iShowImp" class="com.sz.zhiling.service.IShowImp"/>
+        <!--<property name="showDao" ref="showDao"/>-->
+    <!--</bean>-->
+    <bean id="iuPimp" class="com.sz.zhiling.service.IUPimp"/>
+        <!--<property name="upDao" ref="upDao"/>-->
+    <!--</bean>-->
+    <!--<bean id="addServlet" class="com.sz.zhiling.web.AddServlet">-->
+        <!--<property name="iuPimp" ref="iuPimp"/>-->
+    <!--</bean>-->
+    <!--<bean id="startServlet" class="com.sz.zhiling.web.StartServlet">-->
+        <!--<property name="iShowImp" ref="iShowImp"/>-->
+    <!--</bean>-->
+
+
+</beans>
+
