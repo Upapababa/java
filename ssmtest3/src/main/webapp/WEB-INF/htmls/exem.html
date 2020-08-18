@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="/../bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/../layer/theme/default/layer.css">
+    <script src="/../bootstrap/js/jquery.min.js"></script>
+    <script src="/../bootstrap/js/bootstrap.min.js"></script>
+    <script src="/../layer/layer.js"></script>
+</head>
+<body onload="showAllRemark()">
+
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1>springMVC考试：迎接中国第35个教师节评论系统</h1>
+        </div>
+
+        <div class="panel-body">
+            <a class="btn btn-success" id="open">新增</a>
+            <table class="table">
+                <tr>
+                    <td>序号</td>
+                    <td>用户编号</td>
+                    <td>用户名</td>
+                    <td>密码</td>
+                    <td>操作</td>
+                </tr>
+                <!--添加评论信息-->
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">修改或新增用户</h4>
+                    </div>
+
+                    <form id="replyform" class="form-horizontal" >
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">用户名：</label>
+                            <div class="col-sm-6">
+                                <input id="uids" name="uids" value="" hidden >
+                                <input id="uname" name="uname" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">密码：</label>
+                            <div class="col-sm-6">
+                                <input id="upwd" name="upwd" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-6">
+                                <button type="button" onclick="tj()" class="btn btn-primary btn-block">确认提交</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <div class="panel-footer text-right">
+            深圳知领，版权所有。
+        </div>
+    </div>
+</div>
+<script>
+    function showAllRemark() {
+        $.get("/showUser/showAllUser.action",function (data) {
+            var p="";
+            $(data).each(function (i,v){
+                p+="<tr>";
+                
+                p+="<td>"+(i+1)+"</td>";
+                p+="<td id='uid'>"+v.uid+"</td>";
+                p+="<td>"+v.uname+"</td>";
+                p+="<td>"+v.upwd+"</td>";
+                p+="<td><a class='btn btn-success' href='#' data-toggle='modal' data-target='#myModal'\t"
+                p+="onclick=\"upd('"+v.uid+"','"+v.uname+"','"+v.upwd+"')\">修改</a></td>"
+                p+="<td><a class='btn btn-danger' onclick=\"del('"+v.uid+"')\">删除</a></td>"
+                p+="</tr>"
+            });$("#tbody").html(p);
+        },"json")
+    }
+
+    $("#open").click(function () {
+        $("#myModal").modal("show");
+        $("#uids").val("");
+        $("#uname").val("");
+        $("#upwd").val("");
+    })
+    
+    function upd(uid,uname,upwd) {
+        $("#uids").val(uid);
+        $("#uname").val(uname);
+        $("#upwd").val(upwd);
+    }
+
+    function tj() {
+        $.post("/showUser/upde.action",
+            $("#replyform").serialize(),
+            function (data) {
+                $("#myModal").modal("hide");
+                showAllRemark();
+                layer.msg(data, {icon: 6});
+            },"text");
+    }
+    
+    function del(uid) {
+        layer.confirm('确认要删除吗？',
+            {icon: 3, title:'系统提示：'},
+            function(index){
+                //do something
+                $.post("/showUser/dele.action",
+                    "uid="+uid,
+                    function (data) {
+                    if(data!=0){
+                        $("#"+uid).remove();
+                        showAllRemark();
+                        layer.msg('删除成功', {icon: 1});
+                    }
+                },"text");
+                layer.close(index); });
+    }
+</script>
+
+</body>
+</html>

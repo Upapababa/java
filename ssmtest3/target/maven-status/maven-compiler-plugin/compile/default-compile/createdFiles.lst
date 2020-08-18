@@ -1,0 +1,5 @@
+com\sz\zhiling\module\User.class
+com\sz\zhiling\controller\UserController.class
+com\sz\zhiling\service\UserImp.class
+com\sz\zhiling\mapper\IUserdao.class
+com\sz\zhiling\service\IUser.class

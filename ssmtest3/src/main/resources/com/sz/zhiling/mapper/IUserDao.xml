@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sz.zhiling.mapper.IUserdao">
+    <!--namespace: 命名空间: namespace="com.sz.zhiling.mapperper.UserDao"-->
+
+    <!--1.查询所有的用户；-->
+    <select id="getAllUser" resultType="com.sz.zhiling.module.User">
+         SELECT * FROM t_user
+    </select>
+
+    <!--添加一个用户-->
+    <insert id="addUser" parameterType="com.sz.zhiling.module.User"
+            useGeneratedKeys="true" keyColumn="uid">
+        insert into t_user(uname,upwd) values(#{uname},#{upwd})
+        <selectKey resultType="int" keyProperty="uid">
+            SELECT LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>
+
+    <!--删除一个用户-->
+    <delete id="deleteUser" parameterType="int" >
+        delete from t_user where uid=#{uid}
+    </delete>
+
+    <!--修改一个用户-->
+    <update id="updeteUser" parameterType="com.sz.zhiling.module.User" >
+        update t_user set uname=#{uname},upwd=#{upwd} where uid=#{uid}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>回复</title>
+    <link rel="stylesheet" href="/../bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/../layer/theme/default/layer.css">
+    <script src="/../bootstrap/js/jquery.min.js"></script>
+    <script src="/../bootstrap/js/bootstrap.min.js"></script>
+    <script src="/../layer/layer.js"></script>
+</head>
+<body onload="showAllReply()">
+
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1>springMVC考试：迎接中国第35个教师节评论系统</h1>
+        </div>
+
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td>序号</td>
+                    <td>回复内容</td>
+                    <td>回复人</td>
+                    <td>回复时间</td>
+                    <td>我要回复</td>
+                </tr>
+                <!--添加评论信息-->
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">新增回复</h4>
+                    </div>
+
+                    <form id="replyform" class="form-horizontal" action="/showReply/addReply.action" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">用户名：</label>
+                            <div class="col-sm-6">
+                                <input id="uname" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">回复内容：</label>
+                            <div class="col-sm-6">
+                                <textarea rows="5" id="huifu" name="huifu" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-6">
+                                <button type="submit" class="btn btn-primary btn-block">确认提交</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <div class="panel-footer text-right">
+            深圳知领，版权所有。
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    function showAllReply() {
+        $.get("/showReply/showAllReply.action",function (data) {
+            var p="";
+            $(data).each(function (i,v){
+                p+="<tr>";
+                p+="<td>"+(i+1)+"</td>";
+                p+="<td>"+v.rmsg+"</td>";
+                p+="<td>"+v.uname+"</td>";
+                p+="<td>"+v.rdate+"</td>";
+                p+="<td><button  class='btn btn-success' onclick='showmotai()'  >我要回复</button></td>"
+                p+="</tr>"
+            });$("#tbody").html(p);
+        },"json")
+    }
+
+    function showmotai() {
+        $.get("/user/getuname.action",function (data) {
+            $("#uname").val(data);
+            $("#uname").prop("readonly","readonly");
+            $("#myModal").modal("show");
+        },"text")
+    }
+</script>
+</html>
