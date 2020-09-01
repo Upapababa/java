@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <title>首页</title>
+    <!--1.引入 bootstrap 框架全局样式 -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+    <!--2.引入 angularJS 分页的样式 -->
+    <link rel="stylesheet" href="angularjs/pagination.css">
+    <!--3.引入 Layer 弹窗的样式 -->
+    <link rel="stylesheet" href="layer/theme/default/layer.css"/>
+    <!--4.引入 jquery 框架类库 -->
+    <script src="bootstrap/js/jquery.min.js"></script>
+    <!--5.引入 bootstrap 框架类库 -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <!--6.引入 angularJS 框架类库 -->
+    <script src="angularjs/angular.min.js"></script>
+    <!--7.引入 angularJS 框架分页的类库 -->
+    <script src="angularjs/pagination.js"></script>
+    <!--8.引入 Layer 弹窗的类库 -->
+    <script src="layer/layer.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="panel panel-primary">
+        <div  class="panel panel-heading">
+            <h1>angular框架</h1>
+        </div>
+        <div class="panel-body" ng-app="myApp" ng-controller="myCtrl" ng-init="getAllUser()">
+            <form class="form-inline">
+                用户名：<input class="form-control" ng-model="UserEntity.uname">
+                <!--表示默认选中的值； ng-init="searchEntity.rid='0'"-->
+                角色ID:<select class="form-control" ng-model="UserEntity.rid" ng-init="UserEntity.rid='0'" ng-options="r.rid as r.rname for r in tRouse"></select>
+                <button  ng-click="searchAll2()"  type="button"  class="btn btn-success">综合查询</button>
+                <button ng-click="addUser()"  type="button"  class="btn btn-success">添加一个新用户</button>
+                <button ng-click="deleteAll()"  type="button"  class="btn btn-success">批量删除</button>
+            </form>
+
+            <table class="table-hover table table-bordered" id="tab">
+                <tr>
+                    <td><input type="checkbox" id="selectAll" /></td>
+                    <td>序号</td>
+                    <td>用户名</td>
+                    <td>角色名</td>
+                    <td>操作</td>
+                </tr>
+                <tr ng-repeat="u in list">
+                    <td><input type="checkbox" ng-change="xz($event,u.uid)" /></td>
+                    <td>{{u.uid}}</td>
+                    <td>{{u.uname}}</td>
+                    <td>{{u.rid}}</td>
+                    <td>
+                        <a  ng-click="updateUsers(u.uid,u.uname,u.rid)" class="btn btn-success">修改</a>
+                        <a  ng-click="deleteUsers(u.uid)" class="btn btn-danger">删除</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="5">
+                        <tm-pagination conf="paginationConf"></tm-pagination>
+                    </td>
+                </tr>
+
+            </table>
+            //模态框
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                添加或修改
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input hidden ng-model="UserModel.uid">
+                                用户名：<input class="form-control" ng-model="UserModel.uname">
+                                <!--表示默认选中的值； ng-init="searchEntity.rid='0'"-->
+                                角色名:<select class="form-control" ng-model="UserModel.rid" ng-init="UserModel.rid='0'" ng-options="r.rid as r.rname for r in tRouse"></select>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                            </button>
+                            <button ng-click="tj()" type="button" class="btn btn-primary">
+                                提交更改
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+
+        </div>
+        <div class="panel-footer text-right">
+            版权所有
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+<script>
+    var app = angular.module("myApp",['pagination']);
+    app.controller("myCtrl",function ($scope,$http) {
+
+        //分页属性的配置；
+        $scope.paginationConf = {
+            currentPage:1,   //单前页
+            itemsPerPage:2,   //每页几条数据
+            totalItems:1000,    //总页数
+            perPageOptions:[1,2,3,4,5],   //显示几条页码
+            onChange:function () {
+                //$scope.search($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage); //没有查询条件的分页；
+                $scope.searchAll($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);  //有条件的查询+分页；
+            }
+        }
+
+        $scope.getAllUser = function () {
+            //查询所有的角色； 用于选择查询条件；
+            $http.get("/rouse/list").success(function (data) {
+                $scope.tRouse = data;
+                $scope.tRouse.unshift({rid:'0',rname:'--请选择--'});   //加一行数据；
+            });
+        };
+
+        //分页的功能； 没有查询条件的；
+        var index = -1;
+        $scope.search =  function (pageIndex, pageSize) {
+            index = layer.load(1);   //开启进度条；
+            $http.get("/user/list4?pageIndex="+pageIndex+"&pageSize="+pageSize).success(function (data) {
+                $scope.list = data.rows;
+                $scope.paginationConf.totalItems = data.total;
+                layer.close(index);  //关闭进度条；
+            });
+        };
+
+
+        //综合查询；
+        $scope.searchAll = function (pageIndex, pageSize) {
+            index = layer.load(1);
+            $http.post("/user/searchAll?pageIndex="+pageIndex+"&pageSize="+pageSize,$scope.UserEntity).success(function (data) {
+                $scope.list = data.rows;
+                $scope.paginationConf.totalItems = data.total;   //更新总记录数；
+                layer.close(index);  //关闭进度条；
+            });
+        }
+
+        //综合查询2；
+        $scope.searchAll2 = function () {
+            //调用上面的方法；
+            $scope.searchAll($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
+        }
+
+        //修改时给模态框赋值
+        $scope.updateUsers=function(uid,uname,rid){
+            $scope.UserModel.uid=uid;
+            $scope.UserModel.uname=uname;
+            $scope.UserModel.rid=rid;
+            $("#myModal").modal("show");
+        }
+        //添加时给模态框赋值
+        $scope.addUser=function(){
+            $scope.UserModel.uid=0;
+            $scope.UserModel.uname="";
+            $scope.UserModel.rid="0";
+            $("#myModal").modal("show");
+        }
+
+        //添加或修改时提交
+        $scope.tj=function(){
+            $http.post("/user/tj",$scope.UserModel).success(function (data) {
+                layer.msg(data,{icon: 6});
+                //修改或添加完毕后，再查询一遍的数据；
+                $scope.searchAll2();
+                $("#myModal").modal("hide");
+            });
+        }
+
+
+        //删除功能；
+        $scope.deleteUsers = function (uid) {
+            //alert(uid);
+            $http.get("/user/deleteUser?uid="+uid).success(function (data) {
+                layer.msg(data,{icon: 6});
+                //删除完毕后，再查询一遍的数据；
+                $scope.searchAll2();
+            });
+        }
+
+
+        $scope.uids=[];
+        //批量删除(选择)
+        $scope.xz=function ($event,uid) {
+            if($event.target.checked){
+                $scope.uids.push(uid);
+            }else{
+                var index =$scope.uids.indexOf(uid);
+                $scope.uids.splice(index,1);
+            }
+        }
+
+        //批量删除
+        $scope.deleteAll=function () {
+            if(confirm('你确定要删除吗?')){
+                $http.get("/user/deleteAll?uids="+$scope.uids).success(function (data) {
+                    layer.msg(data,{icon:6,title:'系统提示:'});
+                    $scope.search($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
+                })
+            }
+        }
+
+        var i=0;
+        //全选
+        $("#selectAll").on("click",function(){
+            if(i==0){
+                //把所有复选框选中
+                $("#tab td :checkbox").prop("checked", true);
+                for(var a=0;a<$scope.list;a++){
+                    $scope.uids.push($scope.list.uid);
+                }
+                i=1;
+            }else{
+                $("#tab td :checkbox").prop("checked", false);
+                i=0;
+            }
+
+        });
+
+    });
+</script>
+</html>
