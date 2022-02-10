@@ -15,7 +15,7 @@
 
   <properties>
     <!--版本号设定； -->
-    <hiber-version>5.0.4.Final</hiber-version>
+    <hiber-version>5.4.24.Final</hiber-version>
     <spring-version>4.3.9.RELEASE</spring-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
