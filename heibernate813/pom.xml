@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>fastjson</artifactId>
-      <version>1.2.73</version>
+      <version>1.2.83</version>
     </dependency>
 
     <!--hibernate 框架相关的依赖； -->
